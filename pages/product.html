@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Details — BestShop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link rel="stylesheet" href="../css/product.css"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="../index.html" class="logo">
+      <span class="best">Best</span><span class="shop">Shop</span><sup>PRO</sup>
+    </a>
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search for products..."/>
+      <div class="img-search">📷 Search by image</div>
+    </div>
+    <button class="search-btn">Search</button>
+    <div class="nav-icons">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span class="notif-badge">3</span>
+        <small>Wishlist</small>
+      </div>
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <small>Account</small>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="../index.html">Home</a>
+    <span>›</span>
+    <a href="#">Phones</a>
+    <span>›</span>
+    <span>Apple iPhone 15 128GB Black</span>
+  </div>
+
+  <!-- PRODUCT MAIN -->
+  <div class="product-page">
+
+    <!-- LEFT: IMAGE -->
+    <div class="product-gallery">
+      <div class="main-image phone-bg">
+        <span style="font-size:140px">📱</span>
+      </div>
+      <div class="thumb-row">
+        <div class="thumb phone-bg active">📱</div>
+        <div class="thumb phone-bg">📱</div>
+        <div class="thumb phone-bg">📱</div>
+        <div class="thumb phone-bg">📱</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: INFO -->
+    <div class="product-details">
+      <div class="prod-cat-tag" style="background:#D6E8FF;color:#1560A8">📱 Phones</div>
+      <h1 class="prod-title">Apple iPhone 15 128GB Black</h1>
+      <div class="prod-stars">★★★★★ <span>(2,418 reviews)</span></div>
+
+      <div class="prod-desc">
+        The iPhone 15 features a 6.1‑inch Super Retina XDR display, the powerful A16 Bionic chip, 
+        an advanced dual‑camera system with 48MP main camera, and USB‑C connectivity. 
+        Available in multiple colors with all-day battery life.
+      </div>
+
+      <div class="prod-specs">
+        <div class="spec-row"><span>Brand</span><strong>Apple</strong></div>
+        <div class="spec-row"><span>Storage</span><strong>128GB</strong></div>
+        <div class="spec-row"><span>Display</span><strong>6.1" Super Retina XDR</strong></div>
+        <div class="spec-row"><span>Chip</span><strong>A16 Bionic</strong></div>
+        <div class="spec-row"><span>Camera</span><strong>48MP Main + 12MP Ultra Wide</strong></div>
+        <div class="spec-row"><span>Battery</span><strong>Up to 20hr video playback</strong></div>
+      </div>
+
+      <!-- PRICES TABLE -->
+      <div class="prices-section">
+        <h3>Compare Prices</h3>
+        <div class="prices-list">
+
+          <div class="price-row-item best">
+            <div class="store-info">
+              <div class="store-dot" style="background:#E24B4A"></div>
+              <div class="store-text">
+                <div class="store-name">Temu <span class="best-pill">Best Price</span></div>
+                <div class="store-ship">Free shipping · 7-14 days</div>
+              </div>
+            </div>
+            <div class="store-price-area">
+              <div class="store-price green">$699</div>
+              <button class="go-btn" onclick="goStore('Temu', 'https://temu.com')">Buy Now →</button>
+            </div>
+          </div>
+
+          <div class="price-row-item">
+            <div class="store-info">
+              <div class="store-dot" style="background:#BA7517"></div>
+              <div class="store-text">
+                <div class="store-name">Banggood</div>
+                <div class="store-ship">Free shipping · 10-20 days</div>
+              </div>
+            </div>
+            <div class="store-price-area">
+              <div class="store-price">$724</div>
+              <button class="go-btn" onclick="goStore('Banggood', 'https://banggood.com')">Buy Now →</button>
+            </div>
+          </div>
+
+          <div class="price-row-item">
+            <div class="store-info">
+              <div class="store-dot" style="background:#F09F2E"></div>
+              <div class="store-text">
+                <div class="store-name">AliExpress</div>
+                <div class="store-ship">Free shipping · 15-25 days</div>
+              </div>
+            </div>
+            <div class="store-price-area">
+              <div class="store-price">$739</div>
+              <button class="go-btn" onclick="goStore('AliExpress', 'https://aliexpress.com')">Buy Now →</button>
+            </div>
+          </div>
+
+          <div class="price-row-item">
+            <div class="store-info">
+              <div class="store-dot" style="background:#2B7FDD"></div>
+              <div class="store-text">
+                <div class="store-name">Amazon</div>
+                <div class="store-ship">Prime shipping · 2-3 days</div>
+              </div>
+            </div>
+            <div class="store-price-area">
+              <div class="store-price">$799</div>
+              <button class="go-btn" onclick="goStore('Amazon', 'https://amazon.com')">Buy Now →</button>
+            </div>
+          </div>
+
+          <div class="price-row-item">
+            <div class="store-info">
+              <div class="store-dot" style="background:#16A472"></div>
+              <div class="store-text">
+                <div class="store-name">Walmart</div>
+                <div class="store-ship">Free shipping · 3-5 days</div>
+              </div>
+            </div>
+            <div class="store-price-area">
+              <div class="store-price">$799</div>
+              <button class="go-btn" onclick="goStore('Walmart', 'https://walmart.com')">Buy Now →</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="affiliate-note">
+        ℹ️ We earn a small commission when you buy through our links — at no extra cost to you.
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-bottom">
+      <span>© 2025 BestShop · We earn a small commission on purchases · No extra cost to you</span>
+    </div>
+  </footer>
+
+  <script>
+    function goStore(name, url) {
+      if (confirm('You will be redirected to ' + name + '.\nThis is an affiliate link — no extra cost to you!')) {
+        window.open(url, '_blank');
+      }
+    }
+    document.querySelectorAll('.thumb').forEach((t, i) => {
+      t.addEventListener('click', () => {
+        document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

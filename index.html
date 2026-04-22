@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BestShop — Compare Prices Across 8 Stores</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ANNOUNCEMENT BAR -->
+  <div class="announce-bar">
+    <span>🎉 <strong>New:</strong> Zaful & LightInTheBox now added!</span>
+    <div class="sep">|</div>
+    <span>🔥 Over <strong>50,000 products</strong> compared daily</span>
+    <div class="sep">|</div>
+    <span>⚡ Prices updated <strong>every 6 hours</strong></span>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">
+      <span class="best">Best</span><span class="shop">Shop</span><sup>PRO</sup>
+    </div>
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search for products, brands, categories..." id="searchInput"/>
+      <div class="img-search">📷 Search by image</div>
+    </div>
+    <button class="search-btn" onclick="doSearch()">Search</button>
+    <div class="nav-icons">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span class="notif-badge">3</span>
+        <small>Wishlist</small>
+      </div>
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <small>Account</small>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CATEGORIES -->
+  <div class="categories">
+    <div class="cat active">🏠 All</div>
+    <div class="cat">📱 Phones</div>
+    <div class="cat">💻 Electronics</div>
+    <div class="cat">👗 Fashion</div>
+    <div class="cat">🏠 Home</div>
+    <div class="cat">⚽ Sports</div>
+    <div class="cat">💄 Beauty</div>
+    <div class="cat">🧸 Toys</div>
+    <div class="cat hot">🔥 Deals</div>
+  </div>
+
+  <!-- TRUST BAR -->
+  <div class="trust-bar">
+    <div class="trust-item"><span class="check">✓</span> 100% Free to use</div>
+    <div class="trust-item"><span class="check">✓</span> Real-time price comparison</div>
+    <div class="trust-item"><span class="check">✓</span> No hidden fees</div>
+    <div class="trust-item"><span class="check">✓</span> 8 stores in one place</div>
+    <div class="trust-item"><span class="check">✓</span> Updated every 6 hours</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-left">
+      <h1>Find the best price — instantly</h1>
+      <p>We compare prices across 8 major stores so you never overpay again.</p>
+      <div class="stores-pills">
+        <span class="pill">🛒 Amazon</span>
+        <span class="pill">🛍 Temu</span>
+        <span class="pill">📦 AliExpress</span>
+        <span class="pill">👗 SHEIN</span>
+        <span class="pill">🏪 Walmart</span>
+        <span class="pill">⚡ Banggood</span>
+        <span class="pill">💡 LightInTheBox</span>
+        <span class="pill">👙 Zaful</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hstat"><div class="num">60%</div><div class="lbl">Max savings</div></div>
+      <div class="hstat"><div class="num">8</div><div class="lbl">Stores</div></div>
+      <div class="hstat"><div class="num">50K+</div><div class="lbl">Products</div></div>
+    </div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-label">🔥 LIVE DEALS</div>
+    <div class="ticker-track">
+      <span>🔥 Best deals coming soon — stay tuned!</span>
+    </div>
+  </div>
+  <!-- DEALS SECTION -->
+  <section class="section">
+    <div class="section-header">
+      <h2>🔥 Today's Best Deals</h2>
+      <a href="#">See all →</a>
+    </div>
+    <div class="deals-row">
+
+    </div>
+  </section>
+
+  <!-- PRODUCTS SECTION -->
+  <section class="section">
+    <div class="section-header">
+      <h2>⭐ Most Popular Right Now</h2>
+      <a href="#">See all →</a>
+    </div>
+    <div class="products-grid">
+      <div class="empty-state">
+        🛍 No products yet.
+        <a href="pages/add-product.html">Add your first product →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECENTLY VIEWED -->
+  <section class="section">
+    <div class="section-header">
+      <h2>🕐 Recently Viewed</h2>
+      <a href="#">Clear</a>
+    </div>
+    <div class="recently-row"></div>
+  </section>
+
+     
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo"><span class="best">Best</span><span class="shop">Shop</span><sup>PRO</sup></div>
+        <p>Compare prices across 8 major stores and save up to 60% on every purchase.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <a href="#">About Us</a>
+        <a href="#">Blog</a>
+        <a href="#">Contact</a>
+        <a href="#">Careers</a>
+      </div>
+      <div class="footer-links">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Affiliate Disclosure</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+      <div class="footer-links">
+        <h4>Stores</h4>
+        <a href="#">Amazon</a>
+        <a href="#">Temu</a>
+        <a href="#">AliExpress</a>
+        <a href="#">SHEIN</a>
+        <a href="#">Walmart</a>
+      </div>
+      <div class="footer-links">
+        <h4>Language</h4>
+        <a href="#" class="lang-active">English</a>
+        <a href="#">Français</a>
+        <a href="#">Español</a>
+        <a href="#">العربية</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 BestShop · We earn a small commission on purchases · No extra cost to you</span>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

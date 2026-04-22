@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Product — BestShop Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/admin.css"/>
+  <link rel="stylesheet" href="../css/add-product.css"/>
+</head>
+<body>
+
+  <div class="admin-wrap">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-logo">
+        <span class="best">Best</span><span class="shop">Shop</span><sup>PRO</sup>
+      </div>
+      <nav class="sb-nav">
+        <div class="sb-item" onclick="window.location='admin.html'">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="sb-item active" onclick="window.location='admin.html'">
+          <svg viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          Products
+        </div>
+        <div class="sb-item" onclick="window.location='admin.html'">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Deals
+        </div>
+        <div class="sb-item" onclick="window.location='admin.html'">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Stores
+        </div>
+        <div class="sb-item" onclick="window.location='admin.html'">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Statistics
+        </div>
+      </nav>
+      <div class="sb-logout" onclick="window.location='admin.html'">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Admin
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+      <div class="page-header">
+        <div>
+          <h1>Add New Product</h1>
+          <p class="sub">Fill in all product details below</p>
+        </div>
+        <button class="add-btn" onclick="saveProduct()">💾 Save Product</button>
+      </div>
+
+      <div class="ap-grid">
+
+        <!-- LEFT COLUMN -->
+        <div class="ap-left">
+
+          <!-- BASIC INFO -->
+          <div class="ap-card">
+            <div class="ap-card-title">📝 Basic Information</div>
+            <div class="input-group">
+              <label>Product Name *</label>
+              <input type="text" id="pName" placeholder="e.g. Apple iPhone 15 128GB Black"/>
+            </div>
+            <div class="input-group">
+              <label>Product Description *</label>
+              <textarea id="pDesc" rows="4" placeholder="Describe the product features, specs, highlights..."></textarea>
+            </div>
+            <div class="two-col">
+              <div class="input-group">
+                <label>Category *</label>
+                <select id="pCat">
+                  <option value="">Select category...</option>
+                  <option>Phones</option>
+                  <option>Electronics</option>
+                  <option>Fashion</option>
+                  <option>Home</option>
+                  <option>Sports</option>
+                  <option>Beauty</option>
+                  <option>Toys</option>
+                  <option>Computers</option>
+                  <option>Watches</option>
+                  <option>Shoes</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>Brand</label>
+                <input type="text" id="pBrand" placeholder="e.g. Apple, Samsung, Nike..."/>
+              </div>
+            </div>
+            <div class="two-col">
+              <div class="input-group">
+                <label>Model / SKU</label>
+                <input type="text" id="pModel" placeholder="e.g. MQ0T3LL/A"/>
+              </div>
+              <div class="input-group">
+                <label>Rating (1-5)</label>
+                <select id="pRating">
+                  <option value="5">★★★★★ 5.0</option>
+                  <option value="4.5">★★★★½ 4.5</option>
+                  <option value="4">★★★★☆ 4.0</option>
+                  <option value="3.5">★★★½☆ 3.5</option>
+                  <option value="3">★★★☆☆ 3.0</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Number of Reviews</label>
+              <input type="number" id="pReviews" placeholder="e.g. 2418"/>
+            </div>
+          </div>
+
+          <!-- SPECS -->
+          <div class="ap-card">
+            <div class="ap-card-title">🔧 Specifications</div>
+            <div id="specsList">
+              <div class="spec-input-row">
+                <input type="text" placeholder="Spec name (e.g. Storage)" class="spec-key"/>
+                <input type="text" placeholder="Value (e.g. 128GB)" class="spec-val"/>
+                <button class="del-spec-btn" onclick="removeSpec(this)">✕</button>
+              </div>
+              <div class="spec-input-row">
+                <input type="text" placeholder="Spec name (e.g. Display)" class="spec-key"/>
+                <input type="text" placeholder="Value (e.g. 6.1 inch)" class="spec-val"/>
+                <button class="del-spec-btn" onclick="removeSpec(this)">✕</button>
+              </div>
+              <div class="spec-input-row">
+                <input type="text" placeholder="Spec name (e.g. Battery)" class="spec-key"/>
+                <input type="text" placeholder="Value (e.g. 3279 mAh)" class="spec-val"/>
+                <button class="del-spec-btn" onclick="removeSpec(this)">✕</button>
+              </div>
+            </div>
+            <button class="add-spec-btn" onclick="addSpec()">+ Add Specification</button>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="ap-right">
+
+          <!-- IMAGE -->
+          <div class="ap-card">
+            <div class="ap-card-title">🖼 Product Image</div>
+            <div class="img-upload-area" id="imgUploadArea" onclick="document.getElementById('imgInput').click()">
+              <div class="img-preview" id="imgPreview">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <p>Click to upload image</p>
+                <small>PNG, JPG up to 5MB</small>
+              </div>
+            </div>
+            <input type="file" id="imgInput" accept="image/*" style="display:none" onchange="previewImage(this)"/>
+            <div class="input-group" style="margin-top:10px">
+              <label>Or paste image URL</label>
+              <input type="text" id="pImgUrl" placeholder="https://example.com/image.jpg" oninput="previewUrl(this.value)"/>
+            </div>
+          </div>
+
+          <!-- PRICES -->
+          <div class="ap-card">
+            <div class="ap-card-title">💰 Prices by Store</div>
+            <p class="prices-note">Leave empty if product is not available in that store</p>
+
+            <div class="price-input-row">
+              <div class="store-label">
+                <span class="store-dot-sm" style="background:#2B7FDD"></span>
+                🛒 Amazon
+              </div>
+              <div class="price-field">
+                <span>$</span>
+                <input type="number" id="prAmazon" placeholder="0.00" step="0.01"/>
+              </div>
+              <div class="input-group aff-group">
+                <input type="text" id="affAmazon" placeholder="Affiliate link..."/>
+              </div>
+            </div>
+
+            <div class="price-input-row">
+              <div class="store-label">
+                <span class="store-dot-sm" style="background:#E24B4A"></span>
+                🛍 Temu
+              </div>
+              <div class="price-field">
+                <span>$</span>
+                <input type="number" id="prTemu" placeholder="0.00" step="0.01"/>
+              </div>
+              <div class="input-group aff-group">
+                <input type="text" id="affTemu" placeholder="Affiliate link..."/>
+              </div>
+            </div>
+
+            <div class="price-input-row">
+              <div class="store-label">
+                <span class="store-dot-sm" style="background:#F09F2E"></span>
+                📦 AliExpress
+              </div>
+              <div class="price-field">
+                <span>$</span>
+                <input type="number" id="prAli" placeholder="0.00" step="0.01"/>
+              </div>
+              <div class="input-group aff-group">
+                <input type="text" id="affAli" placeholder="Affiliate link..."/>
+              </div>
+            </div>
+
+            <div class="price-input-row">
+              <div class="store-label">
+                <span class="store-dot-sm" style="background:#993556"></span>
+                👗 SHEIN
+              </div>
+              <div class="price-field">
+                <span>$</span>
+                <input type="number" id="prShein" placeholder="0.00" step="0.01"/>
+              </div>
+              <div class="input-group aff-group">
+                <input type="text" id="affShein" placeholder="Affiliate link..."/>
+              </div>
+            </div>
+
+            <div class="price-input-row">
+              <div class="store-label">
+                <span class="store-dot-sm" style="background:#16A472"></span>
+                🏪 Walmart
+              </div>
+              <div class="price-field">
+                <span>$</span>
+                <input type="number" id="prWalmart" placeholder="0.00" step="0.01"/>
+              </div>
+              <div class="input-group aff-group">
+                <input type="text" id="affWalmart" placeholder="Affiliate link..."/>
+              </div>
+            </div>
+
+            <div class="price-input-row">
+              <div class="store-label">
+                <span class="store-dot-sm" style="background:#BA7517"></span>
+                ⚡ Banggood
+              </div>
+              <div class="price-field">
+                <span>$</span>
+                <input type="number" id="prBanggood" placeholder="0.00" step="0.01"/>
+              </div>
+              <div class="input-group aff-group">
+                <input type="text" id="affBanggood" placeholder="Affiliate link..."/>
+              </div>
+            </div>
+
+            <div class="price-input-row">
+              <div class="store-label">
+                <span class="store-dot-sm" style="background:#533AB7"></span>
+                💡 LightInTheBox
+              </div>
+              <div class="price-field">
+                <span>$</span>
+                <input type="number" id="prLight" placeholder="0.00" step="0.01"/>
+              </div>
+              <div class="input-group aff-group">
+                <input type="text" id="affLight" placeholder="Affiliate link..."/>
+              </div>
+            </div>
+
+            <div class="price-input-row">
+              <div class="store-label">
+                <span class="store-dot-sm" style="background:#7B3FC4"></span>
+                👙 Zaful
+              </div>
+              <div class="price-field">
+                <span>$</span>
+                <input type="number" id="prZaful" placeholder="0.00" step="0.01"/>
+              </div>
+              <div class="input-group aff-group">
+                <input type="text" id="affZaful" placeholder="Affiliate link..."/>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- DEAL SETTINGS -->
+          <div class="ap-card">
+            <div class="ap-card-title">🔥 Deal Settings (Optional)</div>
+            <div class="two-col">
+              <div class="input-group">
+                <label>Original Price ($)</label>
+                <input type="number" id="pOriginal" placeholder="0.00" step="0.01"/>
+              </div>
+              <div class="input-group">
+                <label>Deal Expires</label>
+                <input type="datetime-local" id="pExpiry"/>
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Mark as</label>
+              <div class="checkbox-row">
+                <label class="cb-label"><input type="checkbox" id="chkHot"/> 🔥 Hot Deal</label>
+                <label class="cb-label"><input type="checkbox" id="chkFeatured"/> ⭐ Featured</label>
+                <label class="cb-label"><input type="checkbox" id="chkNew"/> 🆕 New Arrival</label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SAVE BAR -->
+      <div class="save-bar">
+        <button class="cancel-btn" onclick="window.location='admin.html'">← Cancel</button>
+        <button class="save-btn-big" onclick="saveProduct()">💾 Save Product</button>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="../js/add-product.js"></script>
+</body>
+</html>
