@@ -1,3 +1,145 @@
+// ===== SUPABASE CONFIG =====
+const SUPABASE_URL = 'https://mfgmyrdlojhecasbkqnb.supabase.co/';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mZ215cmRsb2poZWNhc2JrcW5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODY5MjksImV4cCI6MjA5MjQ2MjkyOX0.Dh6XmdpiaJWHyA0jWPGV7iz6uUpowvNpEWaMSP8ZRgo';
+
+async function fetchProducts() {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/products?select=*&order=created_at.desc`, {
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+    }
+  });
+  const products = await response.json();
+  return products;
+}
+
+async function loadProducts() {
+  const products = await fetchProducts();
+  const grid = document.querySelector('.products-grid');
+  const dealsRow = document.querySelector('.deals-row');
+
+  if (!products || products.length === 0) {
+    grid.innerHTML = '<div class="empty-state">🛍 No products yet.</div>';
+    return;
+  }
+
+  // Clear existing content
+  grid.innerHTML = '';
+  dealsRow.innerHTML = '';
+
+  products.forEach(p => {
+    // Find best price
+    const prices = {
+      Amazon: p.price_amazon,
+      Temu: p.price_temu,
+      AliExpress: p.price_aliexpress,
+      SHEIN: p.price_shein,
+      Walmart: p.price_walmart,
+      Banggood: p.price_banggood,
+      LightInTheBox: p.price_lightinthebox,
+      Zaful: p.price_zaful
+    };
+
+    const storeDots = {
+      Amazon: '#2B7FDD',
+      Temu: '#E24B4A',
+      AliExpress: '#F09F2E',
+      SHEIN: '#993556',
+      Walmart: '#16A472',
+      Banggood: '#BA7517',
+      LightInTheBox: '#533AB7',
+      Zaful: '#7B3FC4'
+    };
+
+    const storeAffs = {
+      Amazon: p.aff_amazon,
+      Temu: p.aff_temu,
+      AliExpress: p.aff_aliexpress,
+      SHEIN: p.aff_shein,
+      Walmart: p.aff_walmart,
+      Banggood: p.aff_banggood,
+      LightInTheBox: p.aff_lightinthebox,
+      Zaful: p.aff_zaful
+    };
+
+    const available = Object.entries(prices)
+      .filter(([k, v]) => v && v > 0)
+      .sort((a, b) => a[1] - b[1]);
+
+    if (available.length === 0) return;
+
+    const [bestStore, bestPrice] = available[0];
+    const bestAff = storeAffs[bestStore];
+
+    const catBg = {
+      Phones: 'phone-bg',
+      Electronics: 'elec-bg',
+      Fashion: 'fashion-bg',
+      Home: 'home-bg'
+    }[p.category] || 'elec-bg';
+
+    const priceRows = available.map(([store, price], i) => `
+      <tr ${i === 0 ? 'class="best-row"' : ''}>
+        <td>
+          <div class="store-cell">
+            <div class="dot" style="background:${storeDots[store]}"></div>
+            <span ${i === 0 ? 'class="best-name"' : ''}>${store}</span>
+            ${i === 0 ? '<span class="best-tag">Best</span>' : ''}
+          </div>
+        </td>
+        <td class="price ${i === 0 ? 'best-price' : ''}" 
+            onclick="window.open('${storeAffs[store] || '#'}', '_blank')"
+            style="cursor:pointer">
+          $${price}
+        </td>
+      </tr>
+    `).join('');
+
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <div class="product-img ${catBg}">
+        ${p.image_url
+          ? `<img src="${p.image_url}" style="width:80%;height:80%;object-fit:contain"/>`
+          : `<span class="prod-emoji">📦</span>`}
+        <span class="cat-tag" style="background:#D6E8FF;color:#1560A8">${p.category}</span>
+        <div class="wish-btn">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        ${p.is_hot ? '<div class="hot-badge">🔥 HOT</div>' : ''}
+      </div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5 - Math.floor(p.rating))} <small>(${p.reviews} reviews)</small></div>
+        <table class="price-table">${priceRows}</table>
+        <button class="buy-btn" onclick="window.open('${bestAff || '#'}', '_blank')">Compare & Buy →</button>
+      </div>
+    `;
+    grid.appendChild(card);
+
+    // Add to deals if hot or has discount
+    if (p.is_hot && dealsRow.children.length < 5) {
+      const deal = document.createElement('div');
+      deal.className = 'deal-card';
+      deal.innerHTML = `
+        <div class="deal-accent" style="background:${storeDots[bestStore]}"></div>
+        <div class="deal-img">${p.image_url ? `<img src="${p.image_url}" style="width:90%;height:90%;object-fit:contain"/>` : '📦'}</div>
+        <div class="deal-name">${p.name}</div>
+        <div class="deal-store">✓ ${bestStore}</div>
+        <div class="deal-price">$${bestPrice}</div>
+        ${p.original_price ? `
+        <div class="deal-old-row">
+          <span class="old-price">$${p.original_price}</span>
+          <span class="discount">-${Math.round((1 - bestPrice/p.original_price)*100)}%</span>
+        </div>` : ''}
+      `;
+      dealsRow.appendChild(deal);
+    }
+  });
+}
+
+// Load products when page loads
+document.addEventListener('DOMContentLoaded', loadProducts);
 // ===== CATEGORIES =====
 const cats = document.querySelectorAll('.cat');
 cats.forEach(cat => {
