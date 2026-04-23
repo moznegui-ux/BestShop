@@ -1,3 +1,5 @@
+const SUPABASE_URL = 'https://mfgmyrdlojhecasbkqnb.supabase.co/';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mZ215cmRsb2poZWNhc2JrcW5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODY5MjksImV4cCI6MjA5MjQ2MjkyOX0.Dh6XmdpiaJWHyA0jWPGV7iz6uUpowvNpEWaMSP8ZRgo';
 // ===== IMAGE PREVIEW =====
 function previewImage(input) {
   const file = input.files[0];
@@ -39,7 +41,9 @@ function removeSpec(btn) {
 }
 
 // ===== SAVE PRODUCT =====
-function saveProduct() {
+const SUPABASE_URL = 'https://mfgmyrdlojhecasbkqnb.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mZ215cmRsb2poZWNhc2JrcW5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODY5MjksImV4cCI6MjA5MjQ2MjkyOX0.Dh6XmdpiaJWHyA0jWPGV7iz6uUpowvNpEWaMSP8ZRgo';
+async function saveProduct() {
   // Collect basic info
   const name = document.getElementById('pName').value.trim();
   const desc = document.getElementById('pDesc').value.trim();
@@ -129,10 +133,51 @@ function saveProduct() {
   };
 
   // Save to localStorage
-  const existing = JSON.parse(localStorage.getItem('bestshop_products') || '[]');
-  existing.push(product);
-  localStorage.setItem('bestshop_products', JSON.stringify(existing));
+ 
+const response = await fetch(`${SUPABASE_URL}/rest/v1/products`, {
+  method: 'POST',
+  headers: {
+    'apikey': SUPABASE_ANON_KEY,
+    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=minimal'
+  },
+  body: JSON.stringify({
+    name: product.name,
+    description: product.desc,
+    category: product.cat,
+    brand: product.brand,
+    model: product.model,
+    rating: product.rating,
+    reviews: product.reviews,
+    image_url: product.image,
+    is_hot: product.isHot,
+    is_featured: product.isFeatured,
+    is_new: product.isNew,
+    original_price: product.original || null,
+    price_amazon: product.prices.Amazon || null,
+    price_temu: product.prices.Temu || null,
+    price_aliexpress: product.prices.AliExpress || null,
+    price_shein: product.prices.SHEIN || null,
+    price_walmart: product.prices.Walmart || null,
+    price_banggood: product.prices.Banggood || null,
+    price_lightinthebox: product.prices.LightInTheBox || null,
+    price_zaful: product.prices.Zaful || null,
+    aff_amazon: product.affiliates.Amazon || null,
+    aff_temu: product.affiliates.Temu || null,
+    aff_aliexpress: product.affiliates.AliExpress || null,
+    aff_shein: product.affiliates.SHEIN || null,
+    aff_walmart: product.affiliates.Walmart || null,
+    aff_banggood: product.affiliates.Banggood || null,
+    aff_lightinthebox: product.affiliates.LightInTheBox || null,
+    aff_zaful: product.affiliates.Zaful || null,
+  })
+});
 
+if (!response.ok) {
+  alert('❌ Error saving product. Please try again.');
+  return;
+}
   // Show success
   showSuccess(name, bestStore, bestPrice);
 }
