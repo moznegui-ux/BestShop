@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage Products — BestShop Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/admin.css"/>
+  <link rel="stylesheet" href="../css/manage-products.css"/>
+</head>
+<body>
+<div class="admin-wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <span class="best">Best</span><span class="shop">Shop</span><sup>PRO</sup>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-item" onclick="window.location='admin.html'">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="sb-item active">
+        <svg viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        Products
+      </div>
+      <div class="sb-item" onclick="window.location='admin.html'">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Deals
+      </div>
+      <div class="sb-item" onclick="window.location='admin.html'">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Stores
+      </div>
+      <div class="sb-item" onclick="window.location='admin.html'">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Statistics
+      </div>
+    </nav>
+    <div class="sb-logout" onclick="window.location='admin.html'">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to Admin
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <div>
+        <h1>Manage Products</h1>
+        <p class="sub" id="productCount">Loading products...</p>
+      </div>
+      <button class="add-btn" onclick="window.location='add-product.html'">+ Add New Product</button>
+    </div>
+
+    <!-- FILTERS BAR -->
+    <div class="filters-bar">
+      <div class="search-input">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="searchInput" placeholder="Search products..." oninput="filterProducts()"/>
+      </div>
+      <select id="catFilter" onchange="filterProducts()">
+        <option value="">All Categories</option>
+        <option>Phones</option>
+        <option>Electronics</option>
+        <option>Fashion</option>
+        <option>Home</option>
+        <option>Sports</option>
+        <option>Beauty</option>
+        <option>Toys</option>
+      </select>
+      <select id="sortFilter" onchange="filterProducts()">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="price_low">Price: Low to High</option>
+        <option value="price_high">Price: High to Low</option>
+        <option value="name">Name A-Z</option>
+      </select>
+      <button class="del-all-btn" onclick="deleteSelected()">🗑 Delete Selected</button>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="mini-stats">
+      <div class="mini-stat">
+        <span id="totalCount">0</span>
+        <small>Total Products</small>
+      </div>
+      <div class="mini-stat">
+        <span id="hotCount">0</span>
+        <small>Hot Deals</small>
+      </div>
+      <div class="mini-stat">
+        <span id="featCount">0</span>
+        <small>Featured</small>
+      </div>
+      <div class="mini-stat">
+        <span id="newCount">0</span>
+        <small>New Arrivals</small>
+      </div>
+    </div>
+
+    <!-- PRODUCTS TABLE -->
+    <div class="table-wrap">
+      <table class="admin-table" id="productsTable">
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"/></th>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Best Price</th>
+            <th>Stores</th>
+            <th>Status</th>
+            <th>Added</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productsBody">
+          <tr><td colspan="8" class="loading-row">⏳ Loading products...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>✏️ Edit Product</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId"/>
+      <div class="two-col">
+        <div class="input-group">
+          <label>Product Name</label>
+          <input type="text" id="editName"/>
+        </div>
+        <div class="input-group">
+          <label>Category</label>
+          <select id="editCat">
+            <option>Phones</option>
+            <option>Electronics</option>
+            <option>Fashion</option>
+            <option>Home</option>
+            <option>Sports</option>
+            <option>Beauty</option>
+            <option>Toys</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Description</label>
+        <textarea id="editDesc" rows="3"></textarea>
+      </div>
+      <div class="two-col">
+        <div class="input-group">
+          <label>Brand</label>
+          <input type="text" id="editBrand"/>
+        </div>
+        <div class="input-group">
+          <label>Image URL</label>
+          <input type="text" id="editImg"/>
+        </div>
+      </div>
+      <div class="modal-section-title">💰 Prices</div>
+      <div class="prices-edit-grid">
+        <div class="price-edit-row"><span>🛒 Amazon</span><input type="number" id="eAmazon" placeholder="0.00"/></div>
+        <div class="price-edit-row"><span>🛍 Temu</span><input type="number" id="eTemu" placeholder="0.00"/></div>
+        <div class="price-edit-row"><span>📦 AliExpress</span><input type="number" id="eAli" placeholder="0.00"/></div>
+        <div class="price-edit-row"><span>👗 SHEIN</span><input type="number" id="eShein" placeholder="0.00"/></div>
+        <div class="price-edit-row"><span>🏪 Walmart</span><input type="number" id="eWalmart" placeholder="0.00"/></div>
+        <div class="price-edit-row"><span>⚡ Banggood</span><input type="number" id="eBanggood" placeholder="0.00"/></div>
+        <div class="price-edit-row"><span>💡 LightInTheBox</span><input type="number" id="eLight" placeholder="0.00"/></div>
+        <div class="price-edit-row"><span>👙 Zaful</span><input type="number" id="eZaful" placeholder="0.00"/></div>
+      </div>
+      <div class="modal-section-title">🔗 Affiliate Links</div>
+      <div class="aff-edit-grid">
+        <div class="input-group"><label>Amazon</label><input type="text" id="affEditAmazon" placeholder="Affiliate link..."/></div>
+        <div class="input-group"><label>Temu</label><input type="text" id="affEditTemu" placeholder="Affiliate link..."/></div>
+        <div class="input-group"><label>AliExpress</label><input type="text" id="affEditAli" placeholder="Affiliate link..."/></div>
+        <div class="input-group"><label>SHEIN</label><input type="text" id="affEditShein" placeholder="Affiliate link..."/></div>
+        <div class="input-group"><label>Walmart</label><input type="text" id="affEditWalmart" placeholder="Affiliate link..."/></div>
+        <div class="input-group"><label>Banggood</label><input type="text" id="affEditBanggood" placeholder="Affiliate link..."/></div>
+      </div>
+      <div class="modal-section-title">🏷 Status</div>
+      <div class="checkbox-row">
+        <label class="cb-label"><input type="checkbox" id="editHot"/> 🔥 Hot Deal</label>
+        <label class="cb-label"><input type="checkbox" id="editFeatured"/> ⭐ Featured</label>
+        <label class="cb-label"><input type="checkbox" id="editNew"/> 🆕 New Arrival</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+      <button class="save-btn" onclick="updateProduct()">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/manage-products.js"></script>
+</body>
+</html>
