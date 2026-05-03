@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-N4NDZJ22W3"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-N4NDZJ22W3');
-</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Panel — BestShop</title>
@@ -67,14 +58,11 @@
           Stores
         </div>
         <div class="sb-item" onclick="showTab('stats')">
-</div>
           <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           Statistics
         </div>
-        <div class="sb-item" onclick="window.location='alex.html'" style="background:linear-gradient(135deg,rgba(108,99,255,0.2),rgba(0,212,170,0.1));border:1px solid rgba(108,99,255,0.3);border-radius:10px;margin-top:8px">
-  🤖 Alex AI
       </nav>
-      <div class="sb-logout" onclick="doLogout()">
+      <a href="alex.html" style="display:flex;align-items:center;gap:10px;padding:12px 16px;margin:8px;border-radius:10px;background:linear-gradient(135deg,rgba(108,99,255,0.2),rgba(0,212,170,0.1));border:1px solid rgba(108,99,255,0.3);color:#fff;text-decoration:none;font-weight:600">🤖 Alex AI</a><div class="sb-logout" onclick="doLogout()">
         <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         Logout
       </div>
