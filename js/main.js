@@ -1,7 +1,16 @@
 // ===== SUPABASE CONFIG =====
-const SUPABASE_URL = 'https://mfgmyrdlojhecasbkqnb.supabase.co/';
+const SUPABASE_URL = 'https://mfgmyrdlojhecasbkqnb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mZ215cmRsb2poZWNhc2JrcW5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODY5MjksImV4cCI6MjA5MjQ2MjkyOX0.Dh6XmdpiaJWHyA0jWPGV7iz6uUpowvNpEWaMSP8ZRgo';
 
+// ===== WISHLIST STATE =====
+let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+
+function updateWishBadge() {
+  const badge = document.querySelector('.notif-badge');
+  if (badge) badge.textContent = wishlist.length;
+}
+
+// ===== FETCH PRODUCTS =====
 async function fetchProducts() {
   const response = await fetch(`${SUPABASE_URL}/rest/v1/products?select=*&order=created_at.desc`, {
     headers: {
@@ -9,57 +18,49 @@ async function fetchProducts() {
       'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
     }
   });
-  const products = await response.json();
-  return products;
+  return await response.json();
 }
 
-async function loadProducts() {
-  const products = await fetchProducts();
-  const grid = document.querySelector('.products-grid');
+// ===== LOAD PRODUCTS =====
+async function loadProducts(filterCategory = 'All') {
+  const grid     = document.querySelector('.products-grid');
   const dealsRow = document.querySelector('.deals-row');
+
+  grid.innerHTML = '<div class="empty-state">⏳ Loading products...</div>';
+
+  const products = await fetchProducts();
 
   if (!products || products.length === 0) {
     grid.innerHTML = '<div class="empty-state">🛍 No products yet.</div>';
+    if (dealsRow) dealsRow.innerHTML = '';
     return;
   }
 
-  // Clear existing content
+  const filtered = filterCategory === 'All'
+    ? products
+    : products.filter(p => p.category === filterCategory);
+
   grid.innerHTML = '';
-  dealsRow.innerHTML = '';
+  if (dealsRow) dealsRow.innerHTML = '';
 
-  products.forEach(p => {
-    // Find best price
+  const storeDots = {
+    Amazon: '#2B7FDD', Temu: '#E24B4A', AliExpress: '#F09F2E',
+    SHEIN: '#993556', Walmart: '#16A472', Banggood: '#BA7517',
+    LightInTheBox: '#533AB7', Zaful: '#7B3FC4'
+  };
+
+  filtered.forEach(p => {
     const prices = {
-      Amazon: p.price_amazon,
-      Temu: p.price_temu,
-      AliExpress: p.price_aliexpress,
-      SHEIN: p.price_shein,
-      Walmart: p.price_walmart,
-      Banggood: p.price_banggood,
-      LightInTheBox: p.price_lightinthebox,
-      Zaful: p.price_zaful
+      Amazon: p.price_amazon, Temu: p.price_temu,
+      AliExpress: p.price_aliexpress, SHEIN: p.price_shein,
+      Walmart: p.price_walmart, Banggood: p.price_banggood,
+      LightInTheBox: p.price_lightinthebox, Zaful: p.price_zaful
     };
-
-    const storeDots = {
-      Amazon: '#2B7FDD',
-      Temu: '#E24B4A',
-      AliExpress: '#F09F2E',
-      SHEIN: '#993556',
-      Walmart: '#16A472',
-      Banggood: '#BA7517',
-      LightInTheBox: '#533AB7',
-      Zaful: '#7B3FC4'
-    };
-
     const storeAffs = {
-      Amazon: p.aff_amazon,
-      Temu: p.aff_temu,
-      AliExpress: p.aff_aliexpress,
-      SHEIN: p.aff_shein,
-      Walmart: p.aff_walmart,
-      Banggood: p.aff_banggood,
-      LightInTheBox: p.aff_lightinthebox,
-      Zaful: p.aff_zaful
+      Amazon: p.aff_amazon, Temu: p.aff_temu,
+      AliExpress: p.aff_aliexpress, SHEIN: p.aff_shein,
+      Walmart: p.aff_walmart, Banggood: p.aff_banggood,
+      LightInTheBox: p.aff_lightinthebox, Zaful: p.aff_zaful
     };
 
     const available = Object.entries(prices)
@@ -69,14 +70,8 @@ async function loadProducts() {
     if (available.length === 0) return;
 
     const [bestStore, bestPrice] = available[0];
-    const bestAff = storeAffs[bestStore];
-
-    const catBg = {
-      Phones: 'phone-bg',
-      Electronics: 'elec-bg',
-      Fashion: 'fashion-bg',
-      Home: 'home-bg'
-    }[p.category] || 'elec-bg';
+    const bestAff = storeAffs[bestStore] || '#';
+    const isWished = wishlist.includes(p.id);
 
     const priceRows = available.map(([store, price], i) => `
       <tr ${i === 0 ? 'class="best-row"' : ''}>
@@ -87,8 +82,8 @@ async function loadProducts() {
             ${i === 0 ? '<span class="best-tag">Best</span>' : ''}
           </div>
         </td>
-        <td class="price ${i === 0 ? 'best-price' : ''}" 
-            onclick="window.open('${storeAffs[store] || '#'}', '_blank')"
+        <td class="price ${i === 0 ? 'best-price' : ''}"
+            onclick="event.stopPropagation();window.open('${storeAffs[store] || '#'}','_blank')"
             style="cursor:pointer">
           $${price}
         </td>
@@ -97,28 +92,58 @@ async function loadProducts() {
 
     const card = document.createElement('div');
     card.className = 'product-card';
+    card.dataset.id = p.id;
     card.innerHTML = `
-      <div class="product-img ${catBg}">
+      <div class="product-img">
         ${p.image_url
-          ? `<img src="${p.image_url}" style="width:80%;height:80%;object-fit:contain"/>`
+          ? `<img src="${p.image_url}" style="width:80%;height:80%;object-fit:contain" onerror="this.style.display='none'"/>`
           : `<span class="prod-emoji">📦</span>`}
-        <span class="cat-tag" style="background:#D6E8FF;color:#1560A8">${p.category}</span>
-        <div class="wish-btn">
-          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span class="cat-tag" style="background:#D6E8FF;color:#1560A8">${p.category || ''}</span>
+        <div class="wish-btn ${isWished ? 'wished' : ''}" data-id="${p.id}">
+          <svg viewBox="0 0 24 24" style="fill:${isWished ? '#E84040' : 'none'}">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
         </div>
         ${p.is_hot ? '<div class="hot-badge">🔥 HOT</div>' : ''}
       </div>
       <div class="product-info">
         <div class="product-name">${p.name}</div>
-        <div class="stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5 - Math.floor(p.rating))} <small>(${p.reviews} reviews)</small></div>
+        <div class="stars">${'★'.repeat(Math.floor(p.rating || 4))}${'☆'.repeat(5 - Math.floor(p.rating || 4))} <small>(${p.reviews || 0} reviews)</small></div>
         <table class="price-table">${priceRows}</table>
-        <button class="buy-btn" onclick="window.open('${bestAff || '#'}', '_blank')">Compare & Buy →</button>
+        <button class="buy-btn" data-url="${bestAff}">Compare & Buy →</button>
       </div>
     `;
+
+    // Wishlist button
+    card.querySelector('.wish-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const btn = e.currentTarget;
+      const id  = btn.dataset.id;
+      const svg = btn.querySelector('svg');
+      if (wishlist.includes(id)) {
+        wishlist = wishlist.filter(x => x !== id);
+        btn.classList.remove('wished');
+        svg.style.fill = 'none';
+      } else {
+        wishlist.push(id);
+        btn.classList.add('wished');
+        svg.style.fill = '#E84040';
+      }
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      updateWishBadge();
+    });
+
+    // Buy button
+    card.querySelector('.buy-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const url = e.currentTarget.dataset.url;
+      if (url && url !== '#') window.open(url, '_blank');
+    });
+
     grid.appendChild(card);
 
-    // Add to deals if hot or has discount
-    if (p.is_hot && dealsRow.children.length < 5) {
+    // Deals section
+    if (p.is_hot && dealsRow && dealsRow.children.length < 5) {
       const deal = document.createElement('div');
       deal.className = 'deal-card';
       deal.innerHTML = `
@@ -133,124 +158,58 @@ async function loadProducts() {
           <span class="discount">-${Math.round((1 - bestPrice/p.original_price)*100)}%</span>
         </div>` : ''}
       `;
+      deal.addEventListener('click', () => { if (bestAff !== '#') window.open(bestAff, '_blank'); });
       dealsRow.appendChild(deal);
     }
   });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="empty-state">🛍 No products in this category yet.</div>';
+  }
 }
 
-// Load products when page loads
-document.addEventListener('DOMContentLoaded', loadProducts);
-// ===== CATEGORIES =====
-const cats = document.querySelectorAll('.cat');
-cats.forEach(cat => {
-  cat.addEventListener('click', () => {
-    cats.forEach(c => c.classList.remove('active'));
-    cat.classList.add('active');
+// ===== CATEGORIES FILTER =====
+document.addEventListener('DOMContentLoaded', () => {
+  updateWishBadge();
+  loadProducts();
+
+  const cats = document.querySelectorAll('.cat');
+  cats.forEach(cat => {
+    cat.addEventListener('click', () => {
+      cats.forEach(c => c.classList.remove('active'));
+      cat.classList.add('active');
+      const catName = cat.textContent.replace(/[^\w\s]/g, '').trim();
+      const catMap = {
+        'All': 'All', 'Phones': 'Phones', 'Electronics': 'Electronics',
+        'Fashion': 'Fashion', 'Home': 'Home', 'Sports': 'Sports',
+        'Beauty': 'Beauty', 'Toys': 'Toys', 'Deals': 'All'
+      };
+      loadProducts(catMap[catName] || 'All');
+    });
   });
 });
 
 // ===== SEARCH =====
 function doSearch() {
-  const query = document.getElementById('searchInput').value.trim();
-  if (query) {
-    alert('Searching for: ' + query + '\n\n(Search results page coming soon!)');
-  }
+  const query = document.getElementById('searchInput')?.value.trim();
+  if (query) alert('Search coming soon!\n\nSearching for: ' + query);
 }
-document.getElementById('searchInput').addEventListener('keypress', function(e) {
+document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
   if (e.key === 'Enter') doSearch();
-});
-
-// ===== WISHLIST =====
-const wishBtns = document.querySelectorAll('.wish-btn');
-wishBtns.forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const svg = btn.querySelector('svg');
-    const isWished = btn.classList.toggle('wished');
-    svg.style.fill = isWished ? '#E84040' : 'none';
-    const badge = document.querySelector('.notif-badge');
-    let count = parseInt(badge.textContent);
-    badge.textContent = isWished ? count + 1 : Math.max(0, count - 1);
-  });
-});
-
-// ===== BUY BUTTONS =====
-const buyBtns = document.querySelectorAll('.buy-btn');
-buyBtns.forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const card = btn.closest('.product-card');
-    const name = card.querySelector('.product-name').textContent;
-    const bestStore = card.querySelector('.best-name').textContent;
-    const bestPrice = card.querySelector('.best-price').textContent;
-    if (confirm(`Buy "${name}" from ${bestStore} for ${bestPrice}?\n\nYou will be redirected to ${bestStore}.`)) {
-      alert('Redirecting to ' + bestStore + ' with your affiliate link...');
-    }
-  });
-});
-
-// ===== COUNTDOWN TIMERS =====
-function startTimer(hours, minutes, seconds, cardIndex) {
-  const tboxes = document.querySelectorAll('.deal-card')[cardIndex]
-    ?.querySelectorAll('.tbox');
-  if (!tboxes || tboxes.length < 3) return;
-
-  let total = hours * 3600 + minutes * 60 + seconds;
-
-  setInterval(() => {
-    if (total <= 0) return;
-    total--;
-    const h = Math.floor(total / 3600);
-    const m = Math.floor((total % 3600) / 60);
-    const s = total % 60;
-    tboxes[0].textContent = String(h).padStart(2, '0');
-    tboxes[1].textContent = String(m).padStart(2, '0');
-    tboxes[2].textContent = String(s).padStart(2, '0');
-  }, 1000);
-}
-
-startTimer(4, 22, 9, 0);
-startTimer(11, 45, 33, 1);
-startTimer(2, 11, 58, 2);
-startTimer(8, 3, 17, 3);
-startTimer(6, 59, 41, 4);
-
-// ===== PRODUCT CARD CLICK =====
-const productCards = document.querySelectorAll('.product-card');
-productCards.forEach(card => {
-  card.addEventListener('click', () => {
-    const name = card.querySelector('.product-name').textContent;
-    alert('Opening product page for:\n"' + name + '"\n\n(Product detail page coming soon!)');
-  });
-});
-
-// ===== RECENTLY VIEWED CLICK =====
-const rvCards = document.querySelectorAll('.rv-card');
-rvCards.forEach(card => {
-  card.addEventListener('click', () => {
-    const name = card.querySelector('.rv-name').textContent;
-    alert('Opening: ' + name);
-  });
 });
 
 // ===== SMOOTH SCROLL CATEGORIES =====
 const catsBar = document.querySelector('.categories');
-let isDown = false, startX, scrollLeft;
-catsBar.addEventListener('mousedown', (e) => {
-  isDown = true;
-  startX = e.pageX - catsBar.offsetLeft;
-  scrollLeft = catsBar.scrollLeft;
-});
-catsBar.addEventListener('mouseleave', () => isDown = false);
-catsBar.addEventListener('mouseup', () => isDown = false);
-catsBar.addEventListener('mousemove', (e) => {
-  if (!isDown) return;
-  e.preventDefault();
-  const x = e.pageX - catsBar.offsetLeft;
-  catsBar.scrollLeft = scrollLeft - (x - startX);
-});
+if (catsBar) {
+  let isDown = false, startX, scrollLeft;
+  catsBar.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - catsBar.offsetLeft; scrollLeft = catsBar.scrollLeft; });
+  catsBar.addEventListener('mouseleave', () => isDown = false);
+  catsBar.addEventListener('mouseup', () => isDown = false);
+  catsBar.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    catsBar.scrollLeft = scrollLeft - (e.pageX - catsBar.offsetLeft - startX);
+  });
+}
 
-// ===== DARK MODE TOGGLE (future) =====
-// Reserved for future dark mode implementation
-
-console.log('BestShop loaded successfully ✅');
+console.log('BestShop loaded ✅');
