@@ -31,27 +31,23 @@
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <div class="logo">
-      <span class="best">Best</span><span class="shop">Shop</span><sup>PRO</sup>
-    </div>
+    <a href="/" class="logo" style="text-decoration:none">
+      <span class="best">Best</span><span class="shop">Shop</span>
+    </a>
     <div class="search-bar">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" placeholder="Search for products, brands, categories..." id="searchInput"/>
-      <div class="img-search">📷 Search by image</div>
+      <input type="text" placeholder="Search for products, brands..." id="searchInput" onkeypress="if(event.key==='Enter')doSearch()"/>
     </div>
-    <button class="search-btn" onclick="doSearch()">Search</button>
     <div class="nav-icons">
-      <div class="nav-icon">
+      <a href="pages/wishlist.html" class="nav-icon" style="text-decoration:none;position:relative">
         <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        <span class="notif-badge">0</span>
+        <span class="notif-badge" id="wishBadge">0</span>
         <small>Wishlist</small>
-      </div>
-       style="cursor:pointer">
-  <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-  <small>Account</small>
-</div><div class="nav-icon account-icon" onclick="window.location='pages/auth.html'"
+      </a>
+      <div id="authArea"></div>
     </div>
   </nav>
+  
 
   <!-- CATEGORIES -->
   <div class="categories">
@@ -182,7 +178,22 @@
       <span>© 2025 BestShop · We earn a small commission on purchases · No extra cost to you</span>
     </div>
   </footer>
-
+<script>
+    let currentUser = null;
+    try { currentUser = JSON.parse(localStorage.getItem('bs_user')); } catch(e) {}
+    function renderAuth() {
+      const area = document.getElementById('authArea');
+      if (currentUser) {
+        const initial = (currentUser.name || currentUser.email || 'U')[0].toUpperCase();
+        area.innerHTML = `<a href="pages/profile.html" style="display:flex;align-items:center;gap:6px;background:#f0f7ff;border:1.5px solid #d0e8ff;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;color:#2B7FDD;cursor:pointer;text-decoration:none"><div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#2B7FDD,#16A472);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">${initial}</div>${currentUser.name?.split(' ')[0] || 'Account'}</a>`;
+      } else {
+        area.innerHTML = `<a href="pages/auth.html" style="display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,#2B7FDD,#16A472);color:#fff;border:none;border-radius:20px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Sign In</a>`;
+      }
+    }
+    renderAuth();
+    const w = JSON.parse(localStorage.getItem('wishlist')||'[]');
+    document.getElementById('wishBadge').textContent = w.length;
+  </script>
   <script src="js/main.js"></script>
 </body>
 </html>
